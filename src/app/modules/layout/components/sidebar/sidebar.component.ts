@@ -9,7 +9,7 @@ import { SidebarMenuComponent } from './sidebar-menu/sidebar-menu.component';
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css'],
-  imports: [NgClass, NgIf, AngularSvgIconModule], //SidebarMenuComponent
+  imports: [NgClass, NgIf, AngularSvgIconModule, SidebarMenuComponent], 
 })
 export class SidebarComponent implements OnInit {
   public appJson: any = packageJson;
