@@ -66,7 +66,29 @@ export class MenuService implements OnDestroy {
   }
 
   public toggleMenu(menu: SubMenuItem) {
-    // No longer forcing sidebar open here
+    if (!this.showSideBar && menu.children?.length) {
+      // Sidebar is collapsed and this menu has children
+      this.showSideBar = true; // Expand sidebar
+
+      // Make the clicked menu active & expanded
+      const updatedMenu = this._pagesMenu().map((menuGroup) => {
+        return {
+          ...menuGroup,
+          items: menuGroup.items.map((item) => {
+            return {
+              ...item,
+              expanded: item === menu, // only expand clicked
+              active: item === menu
+            };
+          }),
+        };
+      });
+
+      this._pagesMenu.set(updatedMenu);
+      return;
+    }
+
+    // Regular behavior when sidebar is already open
     const updatedMenu = this._pagesMenu().map((menuGroup) => {
       return {
         ...menuGroup,

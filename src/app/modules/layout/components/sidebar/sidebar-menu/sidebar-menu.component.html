@@ -9,7 +9,7 @@
     <li *ngFor="let item of menu.items" class="mb-1">
       <div class="relative group">
 
-        <!-- ITEMS WITHOUT CHILDREN: entire icon (and hidden label) are links so they navigate even when collapsed -->
+        <!-- ITEMS WITHOUT CHILDREN -->
         <ng-container *ngIf="!item.children; else parentWithChildren">
           <a
             [routerLink]="item.route"
@@ -19,33 +19,25 @@
             <span [ngClass]="menuService.isActive(item.route) ? 'text-primary' : 'text-muted-foreground/50'">
               <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"></svg-icon>
             </span>
-
-            <!-- visible only when sidebar open -->
             <span *ngIf="menuService.showSideBar" class="truncate text-xs font-semibold tracking-wide">
-              {{ item.label }}
-            </span>
-
-            <!-- tooltip (collapsed state) -->
-            <span
-              *ngIf="!menuService.showSideBar"
-              class="absolute left-12 top-1/2 -translate-y-1/2 scale-0 rounded-md bg-foreground p-2 text-xs font-bold text-background shadow-md transition-transform duration-200 group-hover:scale-100">
               {{ item.label }}
             </span>
           </a>
         </ng-container>
 
-        <!-- ITEMS WITH CHILDREN: clicking the arrow toggles submenu; icon + label are NOT preventing navigation for items that have a route -->
+        <!-- ITEMS WITH CHILDREN -->
         <ng-template #parentWithChildren>
-          <div class="flex items-center gap-4 rounded-lg px-2 py-2 cursor-pointer text-muted-foreground hover:text-foreground">
+          <div
+            class="flex items-center gap-4 rounded-lg px-2 py-2 cursor-pointer text-muted-foreground hover:text-foreground"
+            (click)="toggleMenu(item)">
             <span [ngClass]="menuService.isActive(item.route) ? 'text-primary' : 'text-muted-foreground/50'">
               <svg-icon src="{{ item.icon }}" [svgClass]="'h-5 w-5'"></svg-icon>
             </span>
-
             <span *ngIf="menuService.showSideBar" class="truncate text-xs font-semibold tracking-wide">
               {{ item.label }}
             </span>
 
-            <!-- arrow toggles submenu; stop propagation so we don't accidentally navigate -->
+            <!-- Arrow button -->
             <button
               *ngIf="menuService.showSideBar"
               (click)="toggleMenu(item); $event.stopPropagation()"
@@ -53,21 +45,11 @@
               <svg-icon *ngIf="!item.expanded" src="assets/icons/heroicons/outline/plus.svg" svgClass="h-4 w-4"></svg-icon>
               <svg-icon *ngIf="item.expanded" src="assets/icons/heroicons/outline/minus.svg" svgClass="h-4 w-4"></svg-icon>
             </button>
-
-            <!-- tooltip (collapsed state) -->
-            <span
-              *ngIf="!menuService.showSideBar"
-              class="absolute left-12 top-1/2 -translate-y-1/2 scale-0 rounded-md bg-foreground p-2 text-xs font-bold text-background shadow-md transition-transform duration-200 group-hover:scale-100">
-              <div class="flex items-center gap-2">
-                <svg-icon src="{{ item.icon }}" svgClass="h-4 w-4"></svg-icon>
-                <span>{{ item.label }}</span>
-              </div>
-            </span>
           </div>
         </ng-template>
       </div>
 
-      <!-- Submenus (unchanged usage) -->
+      <!-- Submenus -->
       <app-sidebar-submenu *ngIf="item.children" [submenu]="item"></app-sidebar-submenu>
     </li>
   </ul>
