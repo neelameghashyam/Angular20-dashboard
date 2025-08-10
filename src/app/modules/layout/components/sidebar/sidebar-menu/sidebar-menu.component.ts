@@ -15,12 +15,12 @@ import { SidebarSubmenuComponent } from '../sidebar-submenu/sidebar-submenu.comp
     NgFor,
     NgClass,
     AngularSvgIconModule,
-    NgTemplateOutlet,
+   
     RouterLink,
     RouterLinkActive,
     NgIf,
     SidebarSubmenuComponent,
-  ],
+  ],// NgTemplateOutlet,
 })
 export class SidebarMenuComponent implements OnInit {
   constructor(public menuService: MenuService) {}
