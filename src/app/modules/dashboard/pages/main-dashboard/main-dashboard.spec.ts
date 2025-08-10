@@ -1,19 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NftComponent } from './nft.component';
+import { MainDashboard } from './main-dashboard';
 
-describe('NftComponent', () => {
-  let component: NftComponent;
-  let fixture: ComponentFixture<NftComponent>;
+describe('MainDashboard', () => {
+  let component: MainDashboard;
+  let fixture: ComponentFixture<MainDashboard>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [NftComponent],
-}).compileComponents();
-  });
+      imports: [MainDashboard]
+    })
+    .compileComponents();
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(NftComponent);
+    fixture = TestBed.createComponent(MainDashboard);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
