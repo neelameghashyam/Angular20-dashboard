@@ -17,24 +17,30 @@ export class MenuService implements OnDestroy {
     /** Set dynamic menu */
     this._pagesMenu.set(Menu.pages);
 
-    let sub = this.router.events.subscribe((event) => {
+    const sub = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        /** Expand menu base on active route */
+        /** Expand / mark active menu based on exact active route or active descendant */
         this._pagesMenu().forEach((menu) => {
           let activeGroup = false;
           menu.items.forEach((subMenu) => {
-            const active = this.isActive(subMenu.route);
+            const childActive = subMenu.children ? this.hasActiveChild(subMenu.children) : false;
+            const active = this.isActive(subMenu.route) || childActive;
+
             subMenu.expanded = active;
             subMenu.active = active;
+
             if (active) activeGroup = true;
+
             if (subMenu.children) {
               this.expand(subMenu.children);
             }
           });
+
           menu.active = activeGroup;
         });
       }
     });
+
     this._subscription.add(sub);
   }
 
@@ -60,9 +66,7 @@ export class MenuService implements OnDestroy {
   }
 
   public toggleMenu(menu: SubMenuItem) {
-    this.showSideBar = true;
-
-    /** collapse all submenus except the selected one. */
+    // No longer forcing sidebar open here
     const updatedMenu = this._pagesMenu().map((menuGroup) => {
       return {
         ...menuGroup,
@@ -89,9 +93,17 @@ export class MenuService implements OnDestroy {
     });
   }
 
+  private hasActiveChild(items: Array<any>): boolean {
+    return items.some((item) => {
+      if (this.isActive(item.route)) return true;
+      if (item.children) return this.hasActiveChild(item.children);
+      return false;
+    });
+  }
+
   public isActive(instruction: any): boolean {
     return this.router.isActive(this.router.createUrlTree([instruction]), {
-      paths: 'subset',
+      paths: 'exact',
       queryParams: 'subset',
       fragment: 'ignored',
       matrixParams: 'ignored',
