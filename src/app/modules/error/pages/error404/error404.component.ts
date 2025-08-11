@@ -13,6 +13,6 @@ export class Error404Component {
   constructor(private router: Router) {}
 
   goToHomePage() {
-    this.router.navigate(['/']);
+    this.router.navigate(['/dashboard']);
   }
 }
