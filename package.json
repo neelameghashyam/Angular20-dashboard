@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "private": true,
   "dependencies": {
@@ -35,27 +36,25 @@
     "@angular/cli": "^20.0.0",
     "@angular/compiler-cli": "^20.0.0",
     "@playwright/test": "^1.54.2",
-    "@types/jasmine": "~5.1.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.2.0",
     "autoprefixer": "^10.4.21",
     "cz-conventional-changelog": "^3.3.0",
-    "jasmine-core": "~5.7.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
+    "jest": "^30.0.5",
+    "jest-preset-angular": "^15.0.0",
     "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "pretty-quick": "^4.2.2",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.11",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.2"
   },
   "config": {
-  "commitizen": {
-    "path": "./node_modules/cz-conventional-changelog"
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
-}
 }
