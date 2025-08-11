@@ -1,0 +1,27 @@
+
+/* --> removed from html  */
+/* <div class="mx-4 my-4 space-y-1">
+    <!-- Version -->
+    <a
+      target="_blank"
+      href="https://github.com/neelameghashyam/Angular20-dashboard.git"
+      class="-sm hover:bg-card group flex h-9 cursor-pointer items-center justify-start p-2">
+      <svg-icon
+        src="assets/icons/heroicons/outline/information-circle.svg"
+        [svgClass]="'h-5 w-5 text-muted-foreground/50'">
+      </svg-icon>
+
+      <div class="ml-3 truncate text-[10px] font-semibold tracking-wide focus:outline-hidden">
+        <span class="bg-primary/10 text-primary px-2 font-semibold">v{{ appJson.version }}</span>
+      </div>
+
+      <div class="fixed w-full" *ngIf="!menuService.showSideBar">
+        <span
+          class="z-1 bg-foreground text-background absolute left-12 -top-4 w-auto min-w-max origin-left scale-0 p-2 text-xs font-bold shadow-md transition-all duration-200 group-hover:scale-100">
+          v{{ appJson.version }}
+        </span>
+      </div>
+    </a>
+  </div> */
+
+
