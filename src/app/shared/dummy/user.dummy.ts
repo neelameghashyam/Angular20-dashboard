@@ -1,4 +1,4 @@
-import { User } from '../../modules/uikit/pages/table/model/user.model';
+import { User } from '../models/user.model';
 
 export const dummyData: User[] = [
   {
