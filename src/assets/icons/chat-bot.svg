@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 124 124" fill="none">
+  <!-- Background circle -->
+  <circle cx="62" cy="62" r="60" fill="#BFDDF5" />
+
+  <!-- Headset band -->
+  <path d="M30 50c0-18 14-32 32-32s32 14 32 32" stroke="#666" stroke-width="4" fill="none" stroke-linecap="round" />
+
+  <!-- Antenna -->
+  <line x1="62" y1="14" x2="62" y2="6" stroke="#666" stroke-width="2"/>
+  <circle cx="62" cy="4" r="3" fill="#666"/>
+
+  <!-- Headset earpads -->
+  <circle cx="34" cy="62" r="7" fill="#1F4E79"/>
+  <circle cx="90" cy="62" r="7" fill="#1F4E79"/>
+
+  <!-- Headset mic -->
+  <path d="M90 66c0 10-7 14-18 14" stroke="#1F4E79" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Face background -->
+  <circle cx="62" cy="62" r="20" fill="white" stroke="#ccc" stroke-width="2"/>
+
+  <!-- Eyes -->
+  <circle cx="54" cy="60" r="2.5" fill="black"/>
+  <circle cx="70" cy="60" r="2.5" fill="black"/>
+
+  <!-- Smile -->
+  <path d="M54 68c3 3 13 3 16 0" stroke="black" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Body -->
+  <path d="M42 82h40c6 0 10 5 10 10v15H32V92c0-5 4-10 10-10z" fill="white" stroke="#ccc" stroke-width="2"/>
+
+  <!-- Shirt collar -->
+  <path d="M52 82l-8 12 10-4 8 8 8-8 10 4-8-12h-20z" fill="#1F4E79"/>
+</svg>
