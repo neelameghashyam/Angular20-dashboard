@@ -1,6 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import {
+  trigger,
+  style,
+  transition,
+  animate
+} from '@angular/animations';
 
 interface ChatMessage {
   sender: 'user' | 'bot';
@@ -16,6 +22,17 @@ interface ChatMessage {
   imports: [
     CommonModule,
     FormsModule
+  ],
+   animations: [
+    trigger('fadeSlide', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'translateY(20px)' }))
+      ])
+    ])
   ]
 })
 export class AiraChatbot {
@@ -46,7 +63,7 @@ export class AiraChatbot {
     if (this.messages().length === 0) {
       this.messages.update(m => [
         ...m,
-        { sender: 'bot', text: `Hi Neelameghashyam! How can I help you today?`, showTools: false }
+        { sender: 'bot', text: `Hi How can I help you today?`, showTools: true }
       ]);
     }
   }

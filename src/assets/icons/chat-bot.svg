@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 124 124" fill="none">
   <!-- Background circle -->
-  <circle cx="62" cy="62" r="60" fill="#BFDDF5" />
+  <circle cx="62" cy="62" r="60" fill="#66B1E3" />
 
   <!-- Headset band -->
-  <path d="M30 50c0-18 14-32 32-32s32 14 32 32" stroke="#666" stroke-width="4" fill="none" stroke-linecap="round" />
+  <path d="M30 50c0-18 14-32 32-32s32 14 32 32" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" />
 
   <!-- Antenna -->
   <line x1="62" y1="14" x2="62" y2="6" stroke="#666" stroke-width="2"/>
