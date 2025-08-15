@@ -1,153 +1,317 @@
-<div class="fixed bottom-6 right-6 z-50">
-  <!-- Floating Icon (always visible) -->
+<div class="fixed bottom-5 right-5 z-60">
+  <!-- Floating Chat Bot Icon (Always Visible) -->
   <button
+    mat-fab
+    color="primary"
     (click)="toggleChat()"
-    class="fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out hover:scale-110"
+    matTooltipPosition="left"
+    class="!fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out hover:scale-110"
+    [@scaleIn]
     aria-label="Open chat"
   >
-    <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-10 h-10" />
+    <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-10 h-10 mt-1 inline-block align-middle" />
   </button>
 
-  <!-- Chat Window (opens above the icon) -->
-  <div
+  <!-- Chat Window -->
+  <mat-card
     *ngIf="isOpen()"
     [@fadeSlide]
-    class="fixed bottom-[5rem] right-6 z-50 bg-card text-card-foreground shadow-xl rounded-xl flex flex-col overflow-hidden transition-all duration-300 ease-in-out transform"
-    [ngClass]="isExpanded() ? 'w-[800px] h-[400px]' : 'w-[320px] h-[400px]'"
-    role="dialog" aria-label="AIRA Chat"
+    class="!fixed !bottom-20 !right-6 !z-40 !shadow-2xl !rounded-xl !overflow-hidden !transition-all !duration-300 !ease-in-out !transform !bg-card !text-card-foreground"
+    [ngClass]="isExpanded() ? '!w-[800px] !h-[400px]' : '!w-[320px] !h-[400px]'"
+    role="dialog"
+    aria-label="AIRA Chat"
   >
     <!-- Header -->
-    <div class="flex items-center justify-between p-2 border-b border-border bg-white text-black">
-      <span class="font-semibold flex items-center gap-1.5 text-s">
-        <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-8 h-8" />
-        AIRA
-      </span>
-      <div class="flex gap-1">
-        <button (click)="expandChat()" *ngIf="!isExpanded()" aria-label="Expand">
-          <span class="material-symbols-outlined text-sm">open_in_full</span>
+    <div class="flex items-center justify-between p-2 border-b border-border bg-white">
+      <div class="flex items-center gap-1.5">
+        <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-8 h-8 mt-1 inline-block align-middle" />
+        <span class="font-semibold text-sm text-black">AIRA</span>
+      </div>
+      <div class="flex items-center gap-0.5">
+        <!-- Expand Button -->
+        <button *ngIf="!isExpanded()" mat-icon-button (click)="expandChat()">
+          <mat-icon class="!text-sm !text-gray-600">open_in_full</mat-icon>
         </button>
-        <button (click)="collapseChat()" *ngIf="isExpanded()" aria-label="Collapse">
-          <span class="material-symbols-outlined text-sm">hide</span>
+        <!-- Collapse Button -->
+        <button *ngIf="isExpanded()" mat-icon-button (click)="collapseChat()">
+          <mat-icon class="!text-sm !text-gray-600">close_fullscreen</mat-icon>
         </button>
-        <button (click)="toggleChat()" aria-label="Close chat">
-          <span class="material-symbols-outlined text-sm">close</span>
+        <!-- Close Button -->
+        <button mat-icon-button (click)="toggleChat()">
+          <mat-icon class="!text-sm !text-gray-600">close</mat-icon>
         </button>
       </div>
     </div>
 
-    <!-- Messages -->
-    <div class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-      <!-- Greeting & Quick buttons -->
-      <div *ngIf="messages().length === 0" class="text-center mt-4">
-        <p class="font-semibold text-sm mb-3">
-          Hello {{ username }},<br/>What can I help with?
-        </p>
-        <div class="flex flex-wrap gap-2 justify-center">
-          <button
-            class="bg-gray-300 px-2 py-1 rounded-full text-xs hover:bg-gray-200"
-            *ngFor="let option of quickOptions"
-            (click)="sendQuickOption(option)">
-            {{ option }}
-          </button>
-        </div>
-      </div>
+    <!-- Messages and Feedback Container -->
+    <div class="flex flex-col h-full relative">
+      <!-- Messages Container with Proper Scroll -->
+   <div
+  #messagesContainer
+  class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+  [style.max-height]="isExpanded() ? '300px' : '300px'"
+>
+  <!-- Welcome Message & Quick Options -->
+  <div *ngIf="messages().length === 0" class="text-center mt-2" [@slideUp]>
+    <p class="font-semibold text-sm mb-3 text-gray-800">
+      Hello {{ username }},<br />
+      What can I help with?
+    </p>
 
-      <!-- Chat bubbles -->
-      <div *ngFor="let msg of messages(); let i = index">
-        <div [ngClass]="msg.sender === 'user' ? 'text-right' : 'text-left'">
-          <div
-            [ngClass]="msg.sender === 'user'
-              ? 'inline-block bg-primary text-primary-foreground px-2 py-1 rounded-lg text-xs'
-              : 'inline-block bg-muted text-muted-foreground px-2 py-1 rounded-lg text-xs'">
-            {{ msg.text }}
-          </div>
-
-          <!-- Tools row -->
-          <div *ngIf="msg.sender === 'bot' && msg.showTools"
-               class="flex gap-[2] mt-[2] text-muted-foreground items-center">
-            <!-- Like -->
-           <!-- Like -->
-<button class="p-[1px] flex items-center justify-center ms-icon-btn"
-        (click)="thumbsUp(i)"
-        [attr.aria-pressed]="msg.liked">
-  <span
-    class="material-symbols-outlined ms-icon text-[12px] leading-none scale-60"
-    [class.ms-icon-filled]="msg.liked">
-    thumb_up
-  </span>
-</button>
-
-<!-- Dislike -->
-<button class="p-[1px] flex items-center justify-center ms-icon-btn"
-        (click)="thumbsDown(i)"
-        [attr.aria-pressed]="msg.disliked">
-  <span
-    class="material-symbols-outlined ms-icon text-[12px] leading-none scale-60"
-    [class.ms-icon-filled]="msg.disliked">
-    thumb_down
-  </span>
-</button>
-
-
-            <!-- Copy -->
-            <button class="p-[1px] flex items-center justify-center" (click)="copyMessage(msg.text)">
-              <span class="material-symbols-outlined text-[12px] leading-none scale-60">content_copy</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Typing dots -->
-      <div *ngIf="awaitingResponse()" class="flex items-center gap-1">
-        <div class="inline-flex items-center bg-gray-200 text-gray-600 px-2 py-1 rounded-lg text-sm">
-          <span class="animate-bounce text-xl mx-1">●</span>
-          <span class="animate-bounce text-xl mx-1 delay-150">●</span>
-          <span class="animate-bounce text-xl mx-1 delay-300">●</span>
-        </div>
-      </div>
-
-      <!-- Feedback Box -->
-      <div *ngIf="showFeedbackBox()" class="mt-1 border rounded-lg overflow-hidden bg-gray-100 p-2">
-        <div class="flex justify-between items-center p-1 border-b rounded-t-lg">
-          <span class="font-semibold text-black text-xs">Provide Additional Feedback</span>
-          <span class="text-[10px] text-#3E71AD-600">Characters {{ feedbackText().length }}/500</span>
-        </div>
-        <textarea
-          [ngModel]="feedbackText()"
-          (ngModelChange)="feedbackText.set($event)"
-          placeholder="Type here..."
-          maxlength="500"
-          class="w-full p-2 text-xs border border-gray-300 rounded-lg resize-none focus:outline-black focus:ring-1 focus:ring-black mt-1"
-          rows="3"></textarea>
-        <div class="flex justify-end gap-1 p-1 border-t rounded-b-lg mt-1">
-          <button
-            class="px-2 py-0.5 rounded-full border border-gray-300 text-[#3E71AD] flex items-center gap-0.5 hover:bg-gray-100 text-xs font-medium"
-            (click)="showFeedbackBox.set(false)">
-            <span class="material-symbols-outlined text-[14px] leading-none">close</span>
-            Cancel
-          </button>
-          <button
-            class="px-2 py-0.5 rounded-full bg-[#3E71AD] text-white flex items-center gap-0.5 hover:bg-[#335d8d] text-xs font-medium"
-            (click)="submitFeedback()">
-            <span class="material-symbols-outlined text-[14px] leading-none">done</span>
-            Submit
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Input -->
-    <div class="border-t border-border p-1 flex gap-1">
-      <input
-        type="text"
-        placeholder="Type Here..."
-        class="flex-1 rounded-md border border-border p-1 text-xs"
-        [ngModel]="userInput()"
-        (ngModelChange)="userInput.set($event)"
-        (keydown.enter)="sendMessage()" />
-      <button class="p-0 m-1 border-none bg-transparent text-black hover:scale-110" (click)="sendMessage()">
-        <span class="material-symbols-outlined text-[16px]">send</span>
+    <!-- Quick Action Chips -->
+    <div class="flex flex-wrap gap-2 justify-center">
+      <button
+        *ngFor="let option of quickOptions"
+        (click)="sendQuickOption(option)"
+        class="px-3 py-1.5 text-xs text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300 transition cursor-pointer shadow-sm"
+      >
+        {{ option }}
       </button>
     </div>
   </div>
+
+  <!-- Chat Messages -->
+  <div *ngFor="let msg of messages(); trackBy: trackByMessageId" [@slideUp]>
+    <div [ngClass]="msg.sender === 'user' ? 'text-right' : 'text-left'">
+      <!-- Message Bubble -->
+      <div class="inline-block max-w-[65%]">
+        <mat-card
+          [ngClass]="
+            msg.sender === 'user'
+              ? '!bg-primary !text-primary-foreground !px-3 !py-1.5 !rounded-full !text-xs !inline-block !shadow-sm'
+              : '!bg-muted !text-muted-foreground !px-3 !py-1.5 !rounded-full !text-xs !inline-block !shadow-sm'
+          "
+        >
+          <p class="!mb-0 !text-xs !leading-relaxed break-words">{{ msg.text }}</p>
+        </mat-card>
+      </div>
+
+      <!-- Bot Message Tools -->
+      <div *ngIf="msg.sender === 'bot' && msg.showTools" class="flex items-center gap-0 text-gray-500">
+        <!-- Like Button -->
+        <button
+          mat-icon-button
+          (click)="thumbsUp(msg.id)"
+          [class]="msg.liked ? '!text-green-600' : '!text-gray-400'"
+        >
+          <mat-icon class="!text-s !scale-60">
+            {{ msg.liked ? 'thumb_up' : 'thumb_up_off_alt' }}
+          </mat-icon>
+        </button>
+
+        <!-- Dislike Button -->
+        <button
+          mat-icon-button
+          (click)="thumbsDown(msg.id)"
+          [class]="msg.disliked ? '!text-red-600' : '!text-gray-400'"
+        >
+          <mat-icon class="!text-s !scale-60">
+            {{ msg.disliked ? 'thumb_down' : 'thumb_down_off_alt' }}
+          </mat-icon>
+        </button>
+
+        <!-- Copy Button -->
+        <button mat-icon-button class="!text-gray-400 hover:!text-gray-600">
+          <mat-icon class="!text-s !scale-60">content_copy</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Typing Indicator -->
+  <div *ngIf="awaitingResponse()" class="flex items-center gap-1" [@slideUp]>
+    <mat-card class="!inline-flex !items-center !bg-gray-200 !text-gray-600 !px-3 !py-1.5 !rounded-full !shadow-sm">
+      <div class="flex items-center gap-1">
+        <div class="w-1 h-1 bg-gray-500 rounded-full animate-bounce"></div>
+        <div class="w-1 h-1 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+        <div class="w-1 h-1 bg-gray-500 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+      </div>
+    </mat-card>
+  </div>
 </div>
+
+
+     <!-- Feedback Box (Overlay Style) -->
+<mat-card
+  *ngIf="showFeedbackBox()"
+  class="absolute bottom-13 left-3 right-3 !bg-white border border-gray-300 rounded-md shadow-sm p-0 z-20"
+  style="background-color: white; max-height: none; overflow: hidden;"
+>
+  <!-- Feedback Header -->
+  <div class="flex justify-between items-center px-2 py-1 border-b border-gray-200 bg-white">
+    <span class="font-semibold text-black text-[12px]">Provide Additional Feedback</span>
+    <span class="text-[12px] text-gray-500">Characters {{ feedbackText().length }}/500</span>
+  </div>
+
+  <!-- Feedback Textarea -->
+  <div class="p-2 bg-white">
+    <textarea
+      [(ngModel)]="feedbackText"
+      placeholder="Type here..."
+      maxlength="500"
+      rows="2"
+      class="w-full border border-gray-300 rounded-md p-1.5 text-xs resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+      style="overflow: hidden;"
+    ></textarea>
+  </div>
+
+  <!-- Feedback Actions -->
+  <div class="flex justify-end gap-1 px-2 py-1 border-t border-gray-200 bg-white">
+    <!-- Cancel Button -->
+    <button
+      mat-stroked-button
+      (click)="cancelFeedback()"
+      class="!text-[10px] !px-2 !py-0.5 !h-auto !rounded-full !border-gray-300 !text-blue-600 flex items-center bg-white"
+    >
+      <mat-icon class="!text-sm !mr-0.5">close</mat-icon>
+      Cancel
+    </button>
+
+    <!-- Submit Button -->
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="submitFeedback()"
+      [disabled]="!feedbackText().trim()"
+      class="!text-[10px] !px-2 !py-0.5 !h-auto !rounded-full !bg-blue-600 hover:!bg-blue-700 flex items-center"
+    >
+      <mat-icon class="!text-sm !mr-0.5">done</mat-icon>
+      Submit
+    </button>
+  </div>
+</mat-card>
+
+      <!-- Message Input (Remains Fixed at Bottom) -->
+      <div class="border-t border-border p-2 bg-white">
+        <div class="flex items-center gap-2">
+          <mat-form-field appearance="outline" class="!flex-1">
+            <input
+              matInput
+              [(ngModel)]="userInput"
+              placeholder="Type Here..."
+              (keydown)="handleKeyDown($event)"
+              [disabled]="awaitingResponse()"
+              #messageInput
+              class="!text-xs"
+            />
+          </mat-form-field>
+
+          <!-- Send Button -->
+          <button
+            mat-icon-button
+            (click)="sendMessage()"
+            [disabled]="!userInput().trim() || awaitingResponse()"
+            matTooltip="Send message"
+            class="!text-black hover:!scale-110 !transition-transform !duration-200"
+          >
+            <mat-icon class="!text-base">
+              {{ awaitingResponse() ? 'hourglass_empty' : 'send' }}
+            </mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Custom Styles for Material Components -->
+<style>
+  /* Override Material Design styles with Tailwind-compatible approach */
+  ::ng-deep .mat-mdc-card {
+    --mdc-elevated-card-container-elevation: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  ::ng-deep .mat-mdc-form-field {
+    --mdc-filled-text-field-container-height: 40px;
+    --mdc-outlined-text-field-container-height: 40px;
+  }
+
+  ::ng-deep .mat-mdc-form-field .mat-mdc-text-field-wrapper {
+    height: 40px !important;
+  }
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+
+  ::ng-deep .mat-mdc-chip-option {
+    --mdc-chip-container-height: 24px;
+    --mdc-chip-label-text-size: 11px;
+  }
+
+  ::ng-deep .custom-snackbar {
+    --mdc-snackbar-container-color: #374151 !important;
+    --mdc-snackbar-supporting-text-color: white !important;
+  }
+
+  /* Scrollbar styles */
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+  }
+
+  /* Animation delays for typing indicator dots */
+  @keyframes bounce {
+    0%,
+    80%,
+    100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+
+  .animate-bounce {
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+
+  /* Ensure feedback form doesn't affect input layout */
+  mat-card.absolute {
+    position: absolute !important;
+    bottom: 60px !important; /* Adjusted to sit above input */
+    left: 8px !important;
+    right: 8px !important;
+    z-index: 20; /* Higher z-index to ensure it overlays messages */
+    max-height: 200px; /* Limit feedback form height to prevent overlap issues */
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+  }
+
+  /* Ensure messages container has proper height and scroll */
+  #messagesContainer {
+    min-height: 0; /* Ensure flex child can shrink */
+    max-height: calc(100% - 60px - 40px); /* Subtract header and input height */
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .mat-mdc-card.chat-window {
+      width: calc(100vw - 32px) !important;
+      height: calc(100vh - 140px) !important;
+      right: 16px !important;
+      bottom: 80px !important;
+    }
+
+    mat-card.absolute {
+      bottom: 70px !important; /* Adjust for mobile */
+    }
+  }
+
+  /* Prevent text cutting with word break */
+  mat-card p.break-words {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+</style>
