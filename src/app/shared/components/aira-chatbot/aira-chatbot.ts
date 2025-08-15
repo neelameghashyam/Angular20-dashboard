@@ -7,6 +7,8 @@ interface ChatMessage {
   sender: 'user' | 'bot';
   text: string;
   showTools?: boolean;
+  liked?: boolean;
+  disliked?: boolean;
 }
 
 @Component({
@@ -80,13 +82,15 @@ export class AiraChatbot {
           {
             sender: 'bot',
             text: `The Ref Dr recall is low due to limited campaign targeting. 👉 Click here to view the document`,
-            showTools: true
+            showTools: true,
+            liked: false,
+            disliked: false
           }
         ]);
       } else {
         this.messages.update(m => [
           ...m,
-          { sender: 'bot', text: `Sorry, I couldn’t find anything relevant. Try rephrasing.`, showTools: false }
+          { sender: 'bot', text: `Sorry, I couldn’t find anything relevant. Try rephrasing.`, showTools: true, liked: false, disliked: false }
         ]);
       }
     }, 1200);
@@ -96,8 +100,23 @@ export class AiraChatbot {
     navigator.clipboard.writeText(text);
   }
 
-  thumbsDown() {
-    this.showFeedbackBox.set(true);
+  thumbsUp(index: number) {
+    this.messages.update(msgs => {
+      msgs[index].liked = !msgs[index].liked;
+      if (msgs[index].liked) msgs[index].disliked = false;
+      return [...msgs];
+    });
+  }
+
+  thumbsDown(index: number) {
+    this.messages.update(msgs => {
+      msgs[index].disliked = !msgs[index].disliked;
+      if (msgs[index].disliked) {
+        msgs[index].liked = false;
+        this.showFeedbackBox.set(true);
+      }
+      return [...msgs];
+    });
   }
 
   submitFeedback() {

@@ -294,3 +294,29 @@ select {
 [type='radio'] {
   @apply h-4 w-4 rounded-sm border-border bg-background checked:border-primary checked:bg-primary indeterminate:border-primary indeterminate:bg-primary focus:ring-2 focus:ring-primary;
 }
+
+@layer utilities {
+  /*
+    Material Symbols variable-font settings:
+    - default = outlined (FILL 0)
+    - filled  = FILL 1 (we force it with !important to win over other rules)
+  */
+
+  /* base icon behavior */
+  .ms-icon {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    vertical-align: middle;
+  }
+
+  /* filled (active) variant */
+  .ms-icon-filled {
+    font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24 !important;
+  }
+
+  /* small transition for nicer UX */
+  .ms-icon-transition {
+    transition: transform 120ms ease;
+  }
+
+  
+}

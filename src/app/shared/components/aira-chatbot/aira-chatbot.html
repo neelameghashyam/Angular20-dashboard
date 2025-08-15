@@ -1,18 +1,20 @@
 <div class="fixed bottom-6 right-6 z-50">
-  <!-- Floating Icon -->
+  <!-- Floating Icon (always visible) -->
   <button
     (click)="toggleChat()"
     class="fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out hover:scale-110"
+    aria-label="Open chat"
   >
     <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-10 h-10" />
   </button>
 
-  <!-- Chat Window -->
+  <!-- Chat Window (opens above the icon) -->
   <div
     *ngIf="isOpen()"
     [@fadeSlide]
     class="fixed bottom-[5rem] right-6 z-50 bg-card text-card-foreground shadow-xl rounded-xl flex flex-col overflow-hidden transition-all duration-300 ease-in-out transform"
     [ngClass]="isExpanded() ? 'w-[800px] h-[400px]' : 'w-[320px] h-[400px]'"
+    role="dialog" aria-label="AIRA Chat"
   >
     <!-- Header -->
     <div class="flex items-center justify-between p-2 border-b border-border bg-white text-black">
@@ -21,13 +23,13 @@
         AIRA
       </span>
       <div class="flex gap-1">
-        <button (click)="expandChat()" *ngIf="!isExpanded()">
+        <button (click)="expandChat()" *ngIf="!isExpanded()" aria-label="Expand">
           <span class="material-symbols-outlined text-sm">open_in_full</span>
         </button>
-        <button (click)="collapseChat()" *ngIf="isExpanded()">
+        <button (click)="collapseChat()" *ngIf="isExpanded()" aria-label="Collapse">
           <span class="material-symbols-outlined text-sm">hide</span>
         </button>
-        <button (click)="toggleChat()">
+        <button (click)="toggleChat()" aria-label="Close chat">
           <span class="material-symbols-outlined text-sm">close</span>
         </button>
       </div>
@@ -35,9 +37,11 @@
 
     <!-- Messages -->
     <div class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
-      <!-- Greeting & Buttons -->
+      <!-- Greeting & Quick buttons -->
       <div *ngIf="messages().length === 0" class="text-center mt-4">
-        <p class="font-semibold text-sm mb-3">Hello {{ username }},<br/>What can I help with?</p>
+        <p class="font-semibold text-sm mb-3">
+          Hello {{ username }},<br/>What can I help with?
+        </p>
         <div class="flex flex-wrap gap-2 justify-center">
           <button
             class="bg-gray-300 px-2 py-1 rounded-full text-xs hover:bg-gray-200"
@@ -48,8 +52,8 @@
         </div>
       </div>
 
-      <!-- Chat Messages -->
-      <div *ngFor="let msg of messages()">
+      <!-- Chat bubbles -->
+      <div *ngFor="let msg of messages(); let i = index">
         <div [ngClass]="msg.sender === 'user' ? 'text-right' : 'text-left'">
           <div
             [ngClass]="msg.sender === 'user'
@@ -58,13 +62,34 @@
             {{ msg.text }}
           </div>
 
-          <div *ngIf="msg.sender === 'bot' && msg.showTools" class="flex gap-[2] mt-[2] text-muted-foreground">
-            <button class="p-[1px] flex items-center justify-center">
-              <span class="material-symbols-outlined text-[12px] leading-none scale-60">thumb_up</span>
-            </button>
-            <button class="p-[1px] flex items-center justify-center" (click)="thumbsDown()">
-              <span class="material-symbols-outlined text-[12px] leading-none scale-60">thumb_down</span>
-            </button>
+          <!-- Tools row -->
+          <div *ngIf="msg.sender === 'bot' && msg.showTools"
+               class="flex gap-[2] mt-[2] text-muted-foreground items-center">
+            <!-- Like -->
+           <!-- Like -->
+<button class="p-[1px] flex items-center justify-center ms-icon-btn"
+        (click)="thumbsUp(i)"
+        [attr.aria-pressed]="msg.liked">
+  <span
+    class="material-symbols-outlined ms-icon text-[12px] leading-none scale-60"
+    [class.ms-icon-filled]="msg.liked">
+    thumb_up
+  </span>
+</button>
+
+<!-- Dislike -->
+<button class="p-[1px] flex items-center justify-center ms-icon-btn"
+        (click)="thumbsDown(i)"
+        [attr.aria-pressed]="msg.disliked">
+  <span
+    class="material-symbols-outlined ms-icon text-[12px] leading-none scale-60"
+    [class.ms-icon-filled]="msg.disliked">
+    thumb_down
+  </span>
+</button>
+
+
+            <!-- Copy -->
             <button class="p-[1px] flex items-center justify-center" (click)="copyMessage(msg.text)">
               <span class="material-symbols-outlined text-[12px] leading-none scale-60">content_copy</span>
             </button>
@@ -119,8 +144,7 @@
         class="flex-1 rounded-md border border-border p-1 text-xs"
         [ngModel]="userInput()"
         (ngModelChange)="userInput.set($event)"
-        (keydown.enter)="sendMessage()"
-      />
+        (keydown.enter)="sendMessage()" />
       <button class="p-0 m-1 border-none bg-transparent text-black hover:scale-110" (click)="sendMessage()">
         <span class="material-symbols-outlined text-[16px]">send</span>
       </button>
