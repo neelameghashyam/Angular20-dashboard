@@ -22,13 +22,13 @@
         AIRA
       </span>
       <div class="flex gap-1">
-        <button (click)="expandChat()" *ngIf="!isExpanded()" >
+        <button (click)="expandChat()" *ngIf="!isExpanded()">
           <span class="material-symbols-outlined text-sm">open_in_full</span>
         </button>
-        <button (click)="collapseChat()" *ngIf="isExpanded()" >
+        <button (click)="collapseChat()" *ngIf="isExpanded()">
           <span class="material-symbols-outlined text-sm">hide</span>
         </button>
-        <button (click)="toggleChat()" >
+        <button (click)="toggleChat()">
           <span class="material-symbols-outlined text-sm">close</span>
         </button>
       </div>
@@ -36,80 +36,79 @@
 
     <!-- Messages -->
     <div class="flex-1 overflow-y-auto p-2 space-y-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
+      
+      <!-- Greeting & Buttons -->
+      <div *ngIf="messages().length === 0" class="text-center mt-4">
+        <p class="font-semibold text-sm mb-3">Hello {{ username }},<br/>What can I help with?</p>
+        <div class="flex flex-wrap gap-2 justify-center">
+          <button class="bg-gray-300 px-2 py-1 rounded-full text-xs hover:bg-gray-200" 
+                  *ngFor="let option of quickOptions"
+                  (click)="sendQuickOption(option)">
+            {{ option }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Messages -->
       <div *ngFor="let msg of messages()">
         <div [ngClass]="msg.sender === 'user' ? 'text-right' : 'text-left'">
           <div
             [ngClass]="msg.sender === 'user'
               ? 'inline-block bg-primary text-primary-foreground px-2 py-1 rounded-lg text-xs'
-              : 'inline-block bg-muted text-muted-foreground px-2 py-1 rounded-lg text-xs'"
-          >
+              : 'inline-block bg-muted text-muted-foreground px-2 py-1 rounded-lg text-xs'">
             {{ msg.text }}
           </div>
-<div *ngIf="msg.sender === 'bot' && msg.showTools" 
-     class="flex gap-[2] mt-[2] text-muted-foreground">
 
-  <button class="p-[1px] flex items-center justify-center">
-    <span class="material-symbols-outlined text-[12px] leading-none scale-60">thumb_up</span>
-  </button>
-
-  <button class="p-[1px] flex items-center justify-center" (click)="thumbsDown()">
-    <span class="material-symbols-outlined text-[12px] leading-none scale-60">thumb_down</span>
-  </button>
-
-  <button class="p-[1px] flex items-center justify-center" (click)="copyMessage(msg.text)">
-    <span class="material-symbols-outlined text-[12px] leading-none scale-60">content_copy</span>
-  </button>
-</div>
-
+          <div *ngIf="msg.sender === 'bot' && msg.showTools" class="flex gap-[2] mt-[2] text-muted-foreground">
+            <button class="p-[1px] flex items-center justify-center">
+              <span class="material-symbols-outlined text-[12px] leading-none scale-60">thumb_up</span>
+            </button>
+            <button class="p-[1px] flex items-center justify-center" (click)="thumbsDown()">
+              <span class="material-symbols-outlined text-[12px] leading-none scale-60">thumb_down</span>
+            </button>
+            <button class="p-[1px] flex items-center justify-center" (click)="copyMessage(msg.text)">
+              <span class="material-symbols-outlined text-[12px] leading-none scale-60">content_copy</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Typing dots -->
-<div *ngIf="awaitingResponse()" class="flex items-center gap-1">
-  <div class="inline-flex items-center bg-gray-200 text-gray-600 px-2 py-1 rounded-lg text-sm">
-    <span class="animate-bounce text-xl mx-1">●</span>
-    <span class="animate-bounce text-xl mx-1 delay-150">●</span>
-    <span class="animate-bounce text-xl mx-1 delay-300">●</span>
-  </div>
-</div>
-
+      <div *ngIf="awaitingResponse()" class="flex items-center gap-1">
+        <div class="inline-flex items-center bg-gray-200 text-gray-600 px-2 py-1 rounded-lg text-sm">
+          <span class="animate-bounce text-xl mx-1">●</span>
+          <span class="animate-bounce text-xl mx-1 delay-150">●</span>
+          <span class="animate-bounce text-xl mx-1 delay-300">●</span>
+        </div>
+      </div>
 
       <!-- Feedback Box -->
       <div *ngIf="showFeedbackBox()" class="mt-1 border rounded-lg overflow-hidden bg-gray-100 p-2">
-        <!-- Header -->
         <div class="flex justify-between items-center p-1 border-b rounded-t-lg">
           <span class="font-semibold text-black text-xs">Provide Additional Feedback</span>
           <span class="text-[10px] text-#3E71AD-600">Characters {{ feedbackText().length }}/500</span>
         </div>
-
-        <!-- Textarea -->
         <textarea
           [ngModel]="feedbackText()"
           (ngModelChange)="feedbackText.set($event)"
           placeholder="Type here..."
           maxlength="500"
           class="w-full p-2 text-xs border border-gray-300 rounded-lg resize-none focus:outline-black focus:ring-1 focus:ring-black mt-1"
-          rows="3"
-        ></textarea>
-
-        <!-- Footer -->
-<div class="flex justify-end gap-1 p-1 border-t rounded-b-lg mt-1">
-  <button
-    class="px-2 py-0.5 rounded-full border border-gray-300 text-[#3E71AD] flex items-center gap-0.5 hover:bg-gray-100 text-xs font-medium"
-    (click)="showFeedbackBox.set(false)"
-  >
-    <span class="material-symbols-outlined text-[14px] leading-none">close</span>
-    Cancel
-  </button>
-  <button
-    class="px-2 py-0.5 rounded-full bg-[#3E71AD] text-white flex items-center gap-0.5 hover:bg-[#335d8d] text-xs font-medium"
-    (click)="submitFeedback()"
-  >
-    <span class="material-symbols-outlined text-[14px] leading-none">done</span>
-    Submit
-  </button>
-</div>
-
+          rows="3"></textarea>
+        <div class="flex justify-end gap-1 p-1 border-t rounded-b-lg mt-1">
+          <button
+            class="px-2 py-0.5 rounded-full border border-gray-300 text-[#3E71AD] flex items-center gap-0.5 hover:bg-gray-100 text-xs font-medium"
+            (click)="showFeedbackBox.set(false)">
+            <span class="material-symbols-outlined text-[14px] leading-none">close</span>
+            Cancel
+          </button>
+          <button
+            class="px-2 py-0.5 rounded-full bg-[#3E71AD] text-white flex items-center gap-0.5 hover:bg-[#335d8d] text-xs font-medium"
+            (click)="submitFeedback()">
+            <span class="material-symbols-outlined text-[14px] leading-none">done</span>
+            Submit
+          </button>
+        </div>
       </div>
     </div>
 
@@ -123,10 +122,7 @@
         (ngModelChange)="userInput.set($event)"
         (keydown.enter)="sendMessage()"
       />
-      <button
-        class="p-0 m-1 border-none bg-transparent text-black hover:scale-110"
-        (click)="sendMessage()"
-      >
+      <button class="p-0 m-1 border-none bg-transparent text-black hover:scale-110" (click)="sendMessage()">
         <span class="material-symbols-outlined text-[16px]">send</span>
       </button>
     </div>

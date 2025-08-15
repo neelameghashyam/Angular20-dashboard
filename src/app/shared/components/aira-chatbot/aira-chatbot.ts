@@ -1,12 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  trigger,
-  style,
-  transition,
-  animate
-} from '@angular/animations';
+import { trigger, style, transition, animate } from '@angular/animations';
 
 interface ChatMessage {
   sender: 'user' | 'bot';
@@ -19,11 +14,8 @@ interface ChatMessage {
   standalone: true,
   templateUrl: './aira-chatbot.html',
   styleUrls: ['./aira-chatbot.css'],
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
-   animations: [
+  imports: [CommonModule, FormsModule],
+  animations: [
     trigger('fadeSlide', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(20px)' }),
@@ -43,12 +35,18 @@ export class AiraChatbot {
   awaitingResponse = signal(false);
   showFeedbackBox = signal(false);
   feedbackText = signal('');
+  username = 'Ram';
+
+  quickOptions = [
+    'Top clients by Patient Smart Assist',
+    'Unmapped Location count?',
+    'Why is Ref Dr recall low?',
+    'AI resolution rate?',
+    'Compare mapping accuracy by client'
+  ];
 
   toggleChat() {
     this.isOpen.update(v => !v);
-    if (this.isOpen()) {
-      this.greetUser();
-    }
   }
 
   expandChat() {
@@ -59,13 +57,9 @@ export class AiraChatbot {
     this.isExpanded.set(false);
   }
 
-  greetUser() {
-    if (this.messages().length === 0) {
-      this.messages.update(m => [
-        ...m,
-        { sender: 'bot', text: `Hi How can I help you today?`, showTools: true }
-      ]);
-    }
+  sendQuickOption(option: string) {
+    this.messages.update(m => [...m, { sender: 'user', text: option }]);
+    this.respondTo(option);
   }
 
   sendMessage() {
@@ -73,8 +67,11 @@ export class AiraChatbot {
     if (!text) return;
     this.messages.update(m => [...m, { sender: 'user', text }]);
     this.userInput.set('');
-    this.awaitingResponse.set(true);
+    this.respondTo(text);
+  }
 
+  respondTo(text: string) {
+    this.awaitingResponse.set(true);
     setTimeout(() => {
       this.awaitingResponse.set(false);
       if (text.toLowerCase().includes('ref dr recall low')) {
