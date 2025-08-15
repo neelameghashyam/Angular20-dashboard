@@ -9,15 +9,16 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "e2e": "playwright test"
-
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "^20.1.6",
+    "@angular/cdk": "^20.1.6",
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
     "@angular/core": "^20.0.0",
     "@angular/forms": "^20.0.0",
+    "@angular/material": "^20.1.6",
     "@angular/platform-browser": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.1.6",
     "@angular/router": "^20.0.0",
