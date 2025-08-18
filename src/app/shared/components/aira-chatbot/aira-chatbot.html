@@ -1,16 +1,17 @@
 <div class="fixed bottom-5 right-5 z-60">
-  <!-- Floating Chat Bot Icon (Always Visible) -->
-  <button
-    mat-fab
-    color="primary"
-    (click)="toggleChat()"
-    matTooltipPosition="left"
-    class="!fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out hover:scale-110"
-    [@scaleIn]
-    aria-label="Open chat"
-  >
-    <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-10 h-10 mt-1 inline-block align-middle" />
-  </button>
+
+  <!-- Floating Chat Bot Icon (No Background) -->
+<button
+  (click)="toggleChat()"
+  matTooltip="Chat"
+  matTooltipPosition="left"
+  class="!fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out hover:scale-110"
+  [@scaleIn]
+  aria-label="Open chat"
+>
+  <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-12 h-12 mt-2 inline-block align-middle" />
+</button>
+
 
   <!-- Chat Window -->
   <mat-card
@@ -183,33 +184,34 @@
 
       <!-- Message Input (Remains Fixed at Bottom) -->
       <div class="border-t border-border p-2 bg-white">
-        <div class="flex items-center gap-2">
-          <mat-form-field appearance="outline" class="!flex-1">
-            <input
-              matInput
-              [(ngModel)]="userInput"
-              placeholder="Type Here..."
-              (keydown)="handleKeyDown($event)"
-              [disabled]="awaitingResponse()"
-              #messageInput
-              class="!text-xs"
-            />
-          </mat-form-field>
+  <div class="flex items-center gap-2 rounded-lg border px-2 py-1 shadow-sm">
+    <!-- Text Input -->
+    <input
+      matInput
+      [(ngModel)]="userInput"
+      placeholder="Type Here..."
+      (keydown)="handleKeyDown($event)"
+      [disabled]="awaitingResponse()"
+      #messageInput
+      class="flex-1 text-xs focus:outline-none border-none bg-transparent"
+    />
 
-          <!-- Send Button -->
-          <button
-            mat-icon-button
-            (click)="sendMessage()"
-            [disabled]="!userInput().trim() || awaitingResponse()"
-            matTooltip="Send message"
-            class="!text-black hover:!scale-110 !transition-transform !duration-200"
-          >
-            <mat-icon class="!text-base">
-              {{ awaitingResponse() ? 'hourglass_empty' : 'send' }}
-            </mat-icon>
-          </button>
-        </div>
-      </div>
+    <!-- Send Button -->
+    <button
+      mat-icon-button
+      (click)="sendMessage()"
+      [disabled]="!userInput().trim() || awaitingResponse()"
+      matTooltip="Send message"
+      class="!text-black hover:!scale-110 !transition-transform !duration-200 !w-8 !h-8"
+    >
+      <mat-icon class="!text-sm">
+        {{ awaitingResponse() ? 'hourglass_empty' : 'send' }}
+      </mat-icon>
+    </button>
+  </div>
+</div>
+
+
     </div>
   </mat-card>
 </div>
