@@ -1,7 +1,6 @@
 import { Component, HostListener, signal, ViewChild, ElementRef, AfterViewChecked, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Angular Material Imports
 import { MatButtonModule } from '@angular/material/button';
@@ -30,6 +29,8 @@ interface ChatMessage {
   showTools?: boolean;
   liked?: boolean;
   disliked?: boolean;
+  /** NEW: how to render the message */
+  type?: 'text' | 'link' | 'image';
 }
 
 @Component({
@@ -55,6 +56,7 @@ interface ChatMessage {
     MatBadgeModule
   ],
   templateUrl: './aira-chatbot.html',
+  styleUrl: './aira-chatbot.css',
   animations: [
     trigger('fadeSlide', [
       transition(':enter', [
@@ -110,8 +112,12 @@ export class AiraChatbot implements AfterViewChecked {
     'Unmapped Location count?',
     'Why is Ref Dr recall low?',
     'AI resolution rate?',
-    'Compare mapping accuracy by client'
+    'Compare mapping accuracy by client',
+    'Show image'
   ];
+
+  /**  idle reminder timer (2 minutes) */
+  private idleTimer: any = null;
 
   constructor() {
     this.messageForm = this.fb.group({
@@ -147,6 +153,9 @@ export class AiraChatbot implements AfterViewChecked {
   }
 
   sendQuickOption(option: string) {
+    // user activity: cancel pending idle reminder
+    this.cancelIdleTimer();
+
     const message: ChatMessage = {
       id: this.generateMessageId(),
       sender: 'user',
@@ -161,6 +170,9 @@ export class AiraChatbot implements AfterViewChecked {
   sendMessage() {
     const text = this.userInput().trim();
     if (!text) return;
+
+    // user activity: cancel pending idle reminder
+    this.cancelIdleTimer();
 
     const message: ChatMessage = {
       id: this.generateMessageId(),
@@ -181,17 +193,24 @@ export class AiraChatbot implements AfterViewChecked {
     }
   }
 
+  /** supports link/image types and starts idle timer after bot reply */
   respondTo(text: string) {
     this.awaitingResponse.set(true);
     
     setTimeout(() => {
       this.awaitingResponse.set(false);
       let responseText = '';
+      let type: 'text' | 'link' | 'image' = 'text';
       
       if (text.toLowerCase().includes('ref dr recall low')) {
-        responseText = 'The Ref Dr recall is low due to limited campaign targeting. 👉 Click here to view the document';
+        responseText = 'https://www.google.com';
+        type = 'link';
+      } else if (text.toLowerCase().includes('show image') || text.toLowerCase().includes('image')) {
+        responseText = 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png';
+        type = 'image';
       } else {
         responseText = "Sorry, I couldn't find anything relevant. Try rephrasing.";
+        type = 'text';
       }
 
       const botMessage: ChatMessage = {
@@ -201,10 +220,13 @@ export class AiraChatbot implements AfterViewChecked {
         timestamp: new Date(),
         showTools: true,
         liked: false,
-        disliked: false
+        disliked: false,
+        type
       };
 
       this.messages.update(m => [...m, botMessage]);
+
+      this.resetIdleTimer();
     }, 1200);
   }
 
@@ -244,10 +266,21 @@ export class AiraChatbot implements AfterViewChecked {
     );
   }
 
+  /** prevents empty feedback; shows snackbar + bot message on empty */
   submitFeedback() {
     const feedback = this.feedbackText().trim();
     if (!feedback) {
       this.showSnackBar('Please enter feedback before submitting.');
+
+      const errorMessage: ChatMessage = {
+        id: this.generateMessageId(),
+        sender: 'bot',
+        text: 'Please enter feedback before submitting.',
+        timestamp: new Date(),
+        showTools: false,
+        type: 'text'
+      };
+      this.messages.update(m => [...m, errorMessage]);
       return;
     }
 
@@ -259,7 +292,8 @@ export class AiraChatbot implements AfterViewChecked {
       sender: 'bot',
       text: 'Thanks for your feedback!',
       timestamp: new Date(),
-      showTools: false
+      showTools: false,
+      type: 'text'
     };
 
     this.messages.update(m => [...m, thankYouMessage]);
@@ -306,5 +340,29 @@ export class AiraChatbot implements AfterViewChecked {
   @HostListener('document:keydown.escape')
   onEscape() {
     if (this.isOpen()) this.toggleChat();
+  }
+
+  /**  idle reminder helpers (2 minutes of user inactivity after bot reply) */
+  private resetIdleTimer() {
+    this.cancelIdleTimer();
+    this.idleTimer = setTimeout(() => {
+      const helpMessage: ChatMessage = {
+        id: this.generateMessageId(),
+        sender: 'bot',
+        text: 'Need any help?',
+        timestamp: new Date(),
+        showTools: false,
+        type: 'text'
+      };
+      this.messages.update(m => [...m, helpMessage]);
+      // after sending reminder, no auto-reschedule; next user/bot activity will create a new timer
+    }, 2 * 60 * 1000); // 2 minutes
+  }
+
+  private cancelIdleTimer() {
+    if (this.idleTimer) {
+      clearTimeout(this.idleTimer);
+      this.idleTimer = null;
+    }
   }
 }
