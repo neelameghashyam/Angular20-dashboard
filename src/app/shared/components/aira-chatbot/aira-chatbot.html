@@ -3,45 +3,46 @@
   <!-- Floating Chat Bot Icon (No Background) -->
 <button
   (click)="toggleChat()"
-  matTooltip="Chat"
   matTooltipPosition="left"
   class="!fixed bottom-6 right-6 z-50 transition-transform duration-300 ease-in-out hover:scale-110"
   [@scaleIn]
   aria-label="Open chat"
 >
-  <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-12 h-12 mt-2 inline-block align-middle" />
+  <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-10 h-10 mt-2 inline-block align-middle" />
 </button>
 
 
   <!-- Chat Window -->
-  <mat-card
-    *ngIf="isOpen()"
-    [@fadeSlide]
-    class="!fixed !bottom-20 !right-6 !z-40 !shadow-2xl !rounded-xl !overflow-hidden !transition-all !duration-300 !ease-in-out !transform !bg-card !text-card-foreground"
-    [ngClass]="isExpanded() ? '!w-[800px] !h-[400px]' : '!w-[320px] !h-[400px]'"
-    role="dialog"
-    aria-label="AIRA Chat"
-  >
+ <mat-card
+  *ngIf="isOpen()"
+  [@fadeSlide]
+  class="!fixed !bottom-20 !right-6 !z-40 !shadow-2xl !rounded-xl !overflow-hidden !transition-all !duration-300 !ease-in-out !transform !bg-card !text-card-foreground !border !border-gray"
+  [ngClass]="isExpanded() ? '!w-[800px] !h-[420px]' : '!w-[320px] !h-[420px]'"
+  role="dialog"
+  aria-label="AIRA Chat"
+>
+
     <!-- Header -->
-    <div class="flex items-center justify-between p-2 border-b border-border bg-white">
-      <div class="flex items-center gap-1.5">
-        <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-8 h-8 mt-1 inline-block align-middle" />
-        <span class="font-semibold text-sm text-black">AIRA</span>
-      </div>
+    <div class="flex items-center justify-between p-2 border border-border-gray-200 bg-card">
+  <div class="flex items-center gap-1.5">
+    <img src="assets/icons/chat-bot.svg" alt="Chat Bot" class="w-8 h-8 mt-1" />
+    <span class="font-semibold text-sm text-card-foreground">AIRA</span>
+  </div>
       <div class="flex items-center gap-0.5">
-        <!-- Expand Button -->
-        <button *ngIf="!isExpanded()" mat-icon-button (click)="expandChat()">
-          <mat-icon class="!text-sm !text-gray-600">open_in_full</mat-icon>
-        </button>
-        <!-- Collapse Button -->
-        <button *ngIf="isExpanded()" mat-icon-button (click)="collapseChat()">
-          <mat-icon class="!text-sm !text-gray-600">close_fullscreen</mat-icon>
-        </button>
-        <!-- Close Button -->
-        <button mat-icon-button (click)="toggleChat()">
-          <mat-icon class="!text-sm !text-gray-600">close</mat-icon>
-        </button>
-      </div>
+  <!-- Expand Button -->
+  <button *ngIf="!isExpanded()" mat-icon-button (click)="expandChat()">
+    <mat-icon class="!text-xl !text-foreground">open_in_full</mat-icon>
+  </button>
+  <!-- Collapse Button -->
+  <button *ngIf="isExpanded()" mat-icon-button (click)="collapseChat()">
+    <mat-icon class="!text-xl !text-foreground">close_fullscreen</mat-icon>
+  </button>
+  <!-- Close Button -->
+  <button mat-icon-button (click)="toggleChat()">
+    <mat-icon class="!text-xl !text-foreground">close</mat-icon>
+  </button>
+</div>
+
     </div>
 
     <!-- Messages and Feedback Container -->
@@ -54,7 +55,7 @@
 >
   <!-- Welcome Message & Quick Options -->
   <div *ngIf="messages().length === 0" class="text-center mt-2" [@slideUp]>
-    <p class="font-semibold text-sm mb-3 text-gray-800">
+    <p class="font-semibold text-sm mb-3 text-foreground">
       Hello {{ username }},<br />
       What can I help with?
     </p>
@@ -93,7 +94,7 @@
         <button
           mat-icon-button
           (click)="thumbsUp(msg.id)"
-          [class]="msg.liked ? '!text-green-600' : '!text-gray-400'"
+          [class]="msg.liked ? '!text-gray-400' : '!text-gray-400'"
         >
           <mat-icon class="!text-s !scale-60">
             {{ msg.liked ? 'thumb_up' : 'thumb_up_off_alt' }}
@@ -104,7 +105,7 @@
         <button
           mat-icon-button
           (click)="thumbsDown(msg.id)"
-          [class]="msg.disliked ? '!text-red-600' : '!text-gray-400'"
+          [class]="msg.disliked ? '!text-gray-400' : '!text-gray-400'"
         >
           <mat-icon class="!text-s !scale-60">
             {{ msg.disliked ? 'thumb_down' : 'thumb_down_off_alt' }}
@@ -134,35 +135,33 @@
 
      <!-- Feedback Box (Overlay Style) -->
 <mat-card
-  *ngIf="showFeedbackBox()"
-  class="absolute bottom-13 left-3 right-3 !bg-white border border-gray-300 rounded-md shadow-sm p-0 z-20"
-  style="background-color: white; max-height: none; overflow: hidden;"
+ *ngIf="showFeedbackBox()"
+ class="absolute bottom-13 left-3 right-3 !bg-card border border-border rounded-md shadow-sm p-0 z-20 "
+ style="overflow: hidden;"
 >
   <!-- Feedback Header -->
-  <div class="flex justify-between items-center px-2 py-1 border-b border-gray-200 bg-white">
-    <span class="font-semibold text-black text-[12px]">Provide Additional Feedback</span>
-    <span class="text-[12px] text-gray-500">Characters {{ feedbackText().length }}/500</span>
+   <div class="flex justify-between items-center px-2 py-1 border-b border-border bg-card">
+    <span class="font-semibold text-card-foreground text-[12px]">Provide Additional Feedback</span>
+    <span class="text-[12px] text-muted-foreground">Characters {{ feedbackText().length }}/500</span>
   </div>
-
   <!-- Feedback Textarea -->
-  <div class="p-2 bg-white">
+  <div class="p-2 bg-card">
     <textarea
       [(ngModel)]="feedbackText"
       placeholder="Type here..."
       maxlength="500"
       rows="2"
-      class="w-full border border-gray-300 rounded-md p-1.5 text-xs resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
-      style="overflow: hidden;"
+      class="w-full border border-border rounded-md p-1.5 text-xs resize-none focus:outline-none focus:ring-1 focus:ring-primary bg-background text-foreground"
     ></textarea>
   </div>
 
   <!-- Feedback Actions -->
-  <div class="flex justify-end gap-1 px-2 py-1 border-t border-gray-200 bg-white">
+  <div class="flex justify-end gap-1 px-2 py-1  bg-card">
     <!-- Cancel Button -->
     <button
       mat-stroked-button
       (click)="cancelFeedback()"
-      class="!text-[10px] !px-2 !py-0.5 !h-auto !rounded-full !border-gray-300 !text-blue-600 flex items-center bg-white"
+      class="!text-[10px] !px-2 !py-0.5 !h-auto !rounded-full !border-gray-300 !text-[#3E71AD] flex items-center bg-white"
     >
       <mat-icon class="!text-sm !mr-0.5">close</mat-icon>
       Cancel
@@ -174,7 +173,7 @@
       color="primary"
       (click)="submitFeedback()"
       [disabled]="!feedbackText().trim()"
-      class="!text-[10px] !px-2 !py-0.5 !h-auto !rounded-full !bg-blue-600 hover:!bg-blue-700 flex items-center"
+      class="!text-[10px] !px-2 !py-0.5 !h-auto !rounded-full !text-white !text-xs  !bg-[#3E71AD] hover:!bg-[#3E71AD] flex items-center"
     >
       <mat-icon class="!text-sm !mr-0.5">done</mat-icon>
       Submit
@@ -182,34 +181,38 @@
   </div>
 </mat-card>
 
-      <!-- Message Input (Remains Fixed at Bottom) -->
-      <div class="border-t border-border p-2 bg-white">
-  <div class="flex items-center gap-2 rounded-lg border px-2 py-1 shadow-sm">
-    <!-- Text Input -->
-    <input
-      matInput
-      [(ngModel)]="userInput"
-      placeholder="Type Here..."
-      (keydown)="handleKeyDown($event)"
-      [disabled]="awaitingResponse()"
-      #messageInput
-      class="flex-1 text-xs focus:outline-none border-none bg-transparent"
-    />
+     <!-- Message Input (Fixed at Bottom Inside Chat Window) -->
+<div
+  class="absolute bottom-0 left-0 right-0 border-t border-border p-2 bg-card"
+>
+  <div class="flex items-center gap-2 rounded-xl border border-gray-300 bg-card px-3 py-2 shadow-sm">
+  <!-- Text Input -->
+  <input
+    type="text"
+    [(ngModel)]="userInput"
+    placeholder="Type Here..."
+    (keydown)="handleKeyDown($event)"
+    [disabled]="awaitingResponse()"
+    #messageInput
+    class="flex-1 text-sm bg-background text-foreground placeholder-gray-400 focus:outline-none disabled:opacity-50 border-none"
+  />
 
-    <!-- Send Button -->
+ <!-- Send Button -->
     <button
       mat-icon-button
       (click)="sendMessage()"
       [disabled]="!userInput().trim() || awaitingResponse()"
       matTooltip="Send message"
-      class="!text-black hover:!scale-110 !transition-transform !duration-200 !w-8 !h-8"
+      class="!text-foreground hover:!scale-110 !transition-transform !duration-200 !w-8 !h-8"
     >
       <mat-icon class="!text-sm">
         {{ awaitingResponse() ? 'hourglass_empty' : 'send' }}
       </mat-icon>
     </button>
-  </div>
 </div>
+
+</div>
+
 
 
     </div>

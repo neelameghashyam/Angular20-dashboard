@@ -178,7 +178,7 @@
     --background: #0A0A0A;
     --foreground: #F2F2F2;
     --card: #121212;
-    --card-foreground: #262626;
+    --card-foreground: #F6F8FB;
     --muted: #262626;
     --muted-foreground: #A3A3A3;
     --border: #262626;
@@ -322,4 +322,4 @@ select {
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Arial," Helvetica", sans-serif; }
